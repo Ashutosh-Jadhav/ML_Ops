@@ -1,0 +1,21 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: copy-model-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: copy-model
+        image: ashutoshj/qna-trained-model
+        command: ["/bin/sh", "-c"]
+        args: ["cp -r /app/model/* /mnt/model/"]
+        volumeMounts:
+        - name: model-pvc
+          mountPath: /mnt/model
+      restartPolicy: Never
+      volumes:
+      - name: model-pvc
+        persistentVolumeClaim:
+          claimName: model-pvc
+  backoffLimit: 1
