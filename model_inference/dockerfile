@@ -1,0 +1,10 @@
+FROM python:3.8-slim
+
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir torch transformers
+
+COPY inference.py /app/inference.py
+
+WORKDIR /app
+
+CMD ["python3", "answer.py"]

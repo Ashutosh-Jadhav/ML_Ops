@@ -4,7 +4,8 @@ metadata:
   name: model-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadOnlyMany
   resources:
     requests:
       storage: 1Gi
+  volumeName: model-pv 
