@@ -5,13 +5,13 @@ metadata:
 spec:
   containers:
   - name: bert-infer
-    image: ashutoshj/inference-model
+    image: ashutoshj/inference
     command: ["python"]
     args: ["/app/inference.py"]       
     volumeMounts:
-    - name: model-storage
+    - name: model-pv
       mountPath: /mnt/model        
   volumes:
   - name: model-storage
     persistentVolumeClaim:
-      claimName: model-pvc     
+      claimName: model-pvc-reader    

@@ -7,6 +7,8 @@ spec:
   capacity:
     storage: 1Gi
   accessModes:
-    - ReadOnlyMany
+    - ReadWriteMany
   hostPath:
     path: "/mnt/model"
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual

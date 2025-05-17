@@ -11,11 +11,11 @@ spec:
         command: ["/bin/sh", "-c"]
         args: ["cp -r /app/model/* /mnt/model/"]
         volumeMounts:
-        - name: model-pvc
+        - name: model-pv
           mountPath: /mnt/model
       restartPolicy: Never
       volumes:
-      - name: model-pvc
+      - name: model-pv
         persistentVolumeClaim:
-          claimName: model-pvc
+          claimName: model-pvc-writer
   backoffLimit: 1
