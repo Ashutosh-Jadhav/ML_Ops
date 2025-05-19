@@ -23,7 +23,7 @@ spec:
         args:
         - "--dockerfile=/workspace/dockerfile"
         - "--context=/workspace"
-        - "--destination=docker.io/ashutoshj/trained-model-image2:latest"
+        - "--destination=ashutoshj/trained-model-image2:latest"
         - "--verbosity=info"
         volumeMounts:
         - name: build-context
