@@ -3,3 +3,4 @@ local-checkpoint
 .ipynb_checkpoints
 docker-config.json
 docker-config.b64
+docker_secret.yaml

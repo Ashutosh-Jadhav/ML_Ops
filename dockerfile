@@ -1,5 +1,5 @@
 FROM python:3.10-slim
 
-RUN mkdir -p /app/model
+RUN mkdir -p /app
 
-COPY /workspace/model /app/model/
+COPY /model /app/

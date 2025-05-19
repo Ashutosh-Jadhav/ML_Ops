@@ -12,7 +12,7 @@ spec:
           - sh
           - -c
           - |
-            git clone https://github.com/Ashutosh-Jadhav/ML_Ops.git /workspace
+            git clone --depth=1 https://github.com/Ashutosh-Jadhav/ML_Ops.git /workspace
         volumeMounts:
         - name: build-context
           mountPath: /workspace
