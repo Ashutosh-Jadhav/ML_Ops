@@ -1,16 +1,40 @@
-FROM python:3.8-slim
+# FROM python:3.8-slim
 
+# RUN apt-get update && apt-get install -y --no-install-recommends \
+#     build-essential \
+#     && apt-get clean \
+#     && rm -rf /var/lib/apt/lists/*
+
+# RUN pip install --no-cache-dir --upgrade pip && \
+#     pip install --no-cache-dir torch==2.2.0+cpu torchaudio==2.2.0+cpu \
+#     -f https://download.pytorch.org/whl/torch_stable.html && \
+#     pip install --no-cache-dir transformers==4.39.0
+
+# COPY inference.py /app/inference.py
+# WORKDIR /app
+
+# CMD ["python3", "inference.py"]
+
+
+# arm64
+
+FROM --platform=$TARGETPLATFORM python:3.8-slim
+
+# Install build tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install PyTorch, Torchaudio, and Transformers without `+cpu` suffix
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir torch==2.2.0+cpu torchaudio==2.2.0+cpu \
-    -f https://download.pytorch.org/whl/torch_stable.html && \
+    pip install --no-cache-dir torch==2.2.0 torchaudio==2.2.0 && \
     pip install --no-cache-dir transformers==4.39.0
 
+# Copy application code
 COPY inference.py /app/inference.py
-# WORKDIR /app
 
+# Optional: set working directory and entrypoint
+# WORKDIR /app
 # CMD ["python3", "inference.py"]
+
