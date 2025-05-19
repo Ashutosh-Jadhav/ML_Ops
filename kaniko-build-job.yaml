@@ -21,7 +21,7 @@ spec:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:latest
         args:
-        - "--dockerfile=/workspace/trained-model-image2/dockerfile"
+        - "--dockerfile=/workspace/dockerfile"
         - "--context=/workspace"
         - "--destination=docker.io/ashutoshj/trained-model-image2:latest"
         - "--verbosity=info"
@@ -29,7 +29,7 @@ spec:
         - name: build-context
           mountPath: /workspace
         - name: model-volume
-          mountPath: /mnt/model
+          mountPath: /workspace/model
         - name: kaniko-secret
           mountPath: /kaniko/.docker
           readOnly: true
