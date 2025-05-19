@@ -4,8 +4,8 @@ metadata:
   name: model-pvc-writer
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 1Gi
-  storageClassName: manual
+  volumeName: model-pv

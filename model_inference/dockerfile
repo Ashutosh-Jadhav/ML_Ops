@@ -7,4 +7,4 @@ COPY inference.py /app/inference.py
 
 WORKDIR /app
 
-CMD ["python3", "answer.py"]
+CMD ["python3", "inference.py"]
