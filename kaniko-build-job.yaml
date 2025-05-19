@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: kaniko-build-job
+  namespace: training-env
 spec:
   template:
     spec:
@@ -24,7 +25,10 @@ spec:
         - "--dockerfile=/workspace/dockerfile"
         - "--context=/workspace"
         - "--destination=docker.io/ashutoshj/trained-model-image2:latest"
-        - "--verbosity=info"
+        - "--verbosity=debug"
+        env:
+        - name: DOCKER_CONFIG
+          value: /kaniko/.docker
         volumeMounts:
         - name: build-context
           mountPath: /workspace
@@ -45,3 +49,6 @@ spec:
       - name: kaniko-secret
         secret:
           secretName: regcred
+          items:
+          - key: .dockerconfigjson
+            path: config.json
