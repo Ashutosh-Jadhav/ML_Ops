@@ -1,3 +1,5 @@
 qna_model
 local-checkpoint
 .ipynb_checkpoints
+docker-config.json
+docker-config.b64

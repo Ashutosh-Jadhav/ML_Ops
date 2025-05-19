@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kaniko-build-job
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: git-clone
+        image: alpine/git
+        command:
+          - sh
+          - -c
+          - |
+            git clone https://github.com/Ashutosh-Jadhav/ML_Ops.git /workspace
+        volumeMounts:
+        - name: build-context
+          mountPath: /workspace
+
+      containers:
+      - name: kaniko
+        image: gcr.io/kaniko-project/executor:latest
+        args:
+        - "--dockerfile=/workspace/trained-model-image2/dockerfile"
+        - "--context=/workspace"
+        - "--destination=docker.io/ashutoshj/trained-model-image2:latest"
+        - "--verbosity=info"
+        volumeMounts:
+        - name: build-context
+          mountPath: /workspace
+        - name: model-volume
+          mountPath: /mnt/model
+        - name: kaniko-secret
+          mountPath: /kaniko/.docker
+          readOnly: true
+
+      restartPolicy: Never
+
+      volumes:
+      - name: build-context
+        emptyDir: {}
+      - name: model-volume
+        persistentVolumeClaim:
+          claimName: train-model-pvc
+      - name: kaniko-secret
+        secret:
+          secretName: regcred
