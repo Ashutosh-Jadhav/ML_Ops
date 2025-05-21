@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-inference
+  namespace: training-env
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: model-inference
+  template:
+    metadata:
+      labels:
+        app: model-inference
+    spec:
+      containers:
+        - name: inference-container
+          image: ashutoshj/qna_service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - name: model-volume
+              mountPath: /mnt/qna_model
+      volumes:
+        - name: model-volume
+          persistentVolumeClaim:
+            claimName: model-pvc-writer
