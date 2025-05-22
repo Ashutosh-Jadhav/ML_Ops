@@ -43,15 +43,10 @@ pipeline {
             }
         }
 
-        stage('Run Ansible Playbook') {
+        stage('Run Local Kubernetes Cluster') {
             steps {
                 script {
-                    withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
-                        ansiblePlaybook(
-                            playbook: 'deploy.yml',
-                            inventory: 'inventory'
-                        )
-                    }
+                    sh 'kubectl apply -f model-inference-manifests/'
                 }
             }
         }
