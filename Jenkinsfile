@@ -48,6 +48,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
                     sh '''
                         echo "Using Minikube context:"
+                        kubectl delete job copy-model-job --ignore-not-found
                         kubectl config get-contexts
                         kubectl apply -f model-inference-manifests/
                     '''
