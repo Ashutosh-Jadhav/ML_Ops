@@ -4,3 +4,5 @@ local-checkpoint
 docker-config.json
 docker-config.b64
 docker_secret.yaml
+__pycache__
+venv

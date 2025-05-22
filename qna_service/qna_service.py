@@ -10,13 +10,11 @@ class QARequest(BaseModel):
 # Initialize FastAPI app
 app = FastAPI()
 
-# Load model and tokenizer
-model_path = "/mnt/qna_model"  # Replace with Hugging Face model name if using a public model
+model_path = "/mnt/qna_model"  
 model = AutoModelForQuestionAnswering.from_pretrained(model_path)
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 question_answerer = pipeline("question-answering", model=model, tokenizer=tokenizer)
 
-# Define the endpoint
 # @app.get("/")
 # def read_root():
 #     return {"message": "QA Service is running. Use POST /answer for questions."}

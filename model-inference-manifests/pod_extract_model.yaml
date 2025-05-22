@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: copy-model
-        image: ashutoshj/qna-trained-model
+        image: ashutoshj/trained-model-image2
         command: ["/bin/sh", "-c"]
         args: ["cp -r /app/model/* /mnt/model/"]
         volumeMounts:
