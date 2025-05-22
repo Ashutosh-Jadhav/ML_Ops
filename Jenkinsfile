@@ -43,11 +43,14 @@ pipeline {
             }
         }
 
-        stage('Run Local Kubernetes Cluster') {
+        stage('Deploy to Minikube') {
             steps {
-                script {
-                    sh 'kubectl apply -f model-inference-manifests/'
-                }
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl config get-contexts
+                        kubectl apply -f model-inference-manifests/
+                    '''
             }
         }
     }
