@@ -51,6 +51,7 @@ pipeline {
                         kubectl config get-contexts
                         kubectl apply -f model-inference-manifests/
                     '''
+                }
             }
         }
     }
