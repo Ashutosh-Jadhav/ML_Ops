@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: kaniko-build-job
-  namespace: training-env
+  namespace: training-model-env
 spec:
   template:
     spec:

@@ -3,7 +3,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: train-model-pv
-  namespace: training-env
+  namespace: training-model-env
 spec:
   capacity:
     storage: 1Gi

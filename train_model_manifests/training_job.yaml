@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: train-model-job
-  namespace: training-env
+  namespace: training-model-env
 spec:
   template:
     spec:

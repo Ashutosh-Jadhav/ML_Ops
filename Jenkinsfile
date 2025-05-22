@@ -9,7 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('checkout') {
+        stage('Checkout') {
             steps {
                 script {
                     git branch: 'main', url: "${GITHUB_REPO_URL}"
@@ -17,7 +17,19 @@ pipeline {
             }
         }
 
-        stage('test') {
+        stage('Train the Model') {
+            steps {
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl apply -f $SECRET_FILE
+                        kubectl apply -f train_model_manifests/
+                    '''
+                }
+            }
+        }
+
+        stage('Test Qna Service') {
             steps {
                 script {
                     sh 'pytest qna_service/qna_testing.py -v'
@@ -43,7 +55,31 @@ pipeline {
             }
         }
 
-        stage('Deploy to Minikube') {
+        stage('Push Model Image') {
+            steps {
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG'),file(credentialsId: 'K8S_SECRET_FILE', variable: 'SECRET_FILE')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl apply -f $SECRET_FILE
+                        kubectl apply -f kaniko-build-job.yaml
+                    '''
+                }
+
+            }
+        }
+
+        stage('Deploy Model to Minikube') {
+            steps {
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl apply -f job_extract_model.yaml
+                    '''
+                }
+            }
+        }
+
+        stage('Deploy QnaService to Minikube') {
             steps {
                 withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
                     sh '''
