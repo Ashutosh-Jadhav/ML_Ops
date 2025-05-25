@@ -17,10 +17,21 @@ pipeline {
             }
         }
 
-        stage('Testing') {
+        stage('Testing of Qna_Service') {
             steps {
                 script {
                     sh 'pytest qna_service/qna_testing.py -v'
+                }
+            }
+        }
+
+        stage('Model Training') {
+            steps {
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl apply -f train_model_manifests/
+                    '''
                 }
             }
         }
@@ -39,6 +50,18 @@ pipeline {
                     docker.withRegistry('' , 'DockerHubCred') {
                         sh 'docker push ashutoshj/qna_service'
                     }
+                }
+            }
+        }
+
+        stage('Push Model Image') {
+            steps {
+                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG'),file(credentialsId: 'K8S_SECRET_FILE', variable: 'SECRET_YAML')]) {
+                    sh '''
+                        echo "Using Minikube context:"
+                        kubectl delete job kaniko-build-job --ignore-not-found
+                        kubectl apply -f kaniko-build-job.yaml
+                    '''
                 }
             }
         }
