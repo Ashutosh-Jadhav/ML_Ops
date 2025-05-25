@@ -33,7 +33,7 @@ pipeline {
                         kubectl apply -f train_model_manifests/
                         
                         echo "Waiting for model training job to complete..."
-                        kubectl wait --for=condition=complete job --all -n training-model-env --timeout=1800s
+                        kubectl wait --for=condition=complete job/train-model-job -n training-model-env --timeout=1800s
                         
                         # Check if any job failed
                         if kubectl get jobs -o jsonpath='{.items[*].status.failed}' | grep -q "1"; then
