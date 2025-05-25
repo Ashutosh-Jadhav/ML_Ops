@@ -97,6 +97,8 @@ pipeline {
                     sh '''
                         echo "Using Minikube context:"
                         kubectl delete job copy-model-job --ignore-not-found
+                        kubectl apply -f trained_model_pv.yaml
+                        kubectl apply -f trained_model_writer_pvc.yaml
                         kubectl apply -f job_extract_model.yaml
                         
                         echo "Waiting for model loading job to complete..."
