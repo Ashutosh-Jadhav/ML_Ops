@@ -72,6 +72,7 @@ pipeline {
                     sh '''
                         echo "Using Minikube context:"
                         kubectl delete job kaniko-build-job --ignore-not-found
+                        kubectl apply -f SECRET_YAML
                         kubectl apply -f kaniko-build-job.yaml
                         
                         echo "Waiting for kaniko build job to complete..."
