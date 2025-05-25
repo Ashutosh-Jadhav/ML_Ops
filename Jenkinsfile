@@ -30,7 +30,7 @@ pipeline {
                 withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
                     sh '''
                         echo "Using Minikube context:"
-                        kubectl apply -f train_model_manifests/
+                        ls
                     '''
                 }
             }
