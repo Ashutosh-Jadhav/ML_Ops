@@ -33,7 +33,7 @@ pipeline {
                         kubectl apply -f train_model_manifests/
                         
                         echo "Waiting for model training job to complete..."
-                        kubectl wait --for=condition=complete job --all -n training-env --timeout=1800s
+                        kubectl wait --for=condition=complete job --all -n training-model-env --timeout=1800s
                         
                         # Check if any job failed
                         if kubectl get jobs -o jsonpath='{.items[*].status.failed}' | grep -q "1"; then
@@ -75,7 +75,7 @@ pipeline {
                         kubectl apply -f kaniko-build-job.yaml
                         
                         echo "Waiting for kaniko build job to complete..."
-                        kubectl wait --for=condition=complete job/kaniko-build-job --timeout=1800s
+                        kubectl wait --for=condition=complete job/kaniko-build-job -n training-model-env --timeout=1800s
                         
                         # Check if job failed
                         if kubectl get job kaniko-build-job -o jsonpath='{.status.failed}' | grep -q "1"; then
@@ -99,7 +99,7 @@ pipeline {
                         kubectl apply -f job_extract_model.yaml
                         
                         echo "Waiting for model loading job to complete..."
-                        kubectl wait --for=condition=complete job/copy-model-job --timeout=900s
+                        kubectl wait --for=condition=complete job/copy-model-job -n training-env --timeout=900s
                         
                         # Check if job failed
                         if kubectl get job copy-model-job -o jsonpath='{.status.failed}' | grep -q "1"; then
@@ -123,7 +123,7 @@ pipeline {
                         kubectl apply -f model-inference-manifests/
                         
                         echo "Waiting for deployment to be ready..."
-                        kubectl wait --for=condition=available --timeout=600s deployment --all
+                        kubectl wait --for=condition=available --timeout=600s deployment --all -n training-env
                         
                         echo "Deployment completed successfully!"
                     '''
