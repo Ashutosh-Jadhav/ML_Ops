@@ -31,6 +31,18 @@ pipeline {
                     sh '''
                         echo "Using Minikube context:"
                         kubectl apply -f train_model_manifests/
+                        
+                        echo "Waiting for model training job to complete..."
+                        kubectl wait --for=condition=complete job --all -n training-env --timeout=1800s
+                        
+                        # Check if any job failed
+                        if kubectl get jobs -o jsonpath='{.items[*].status.failed}' | grep -q "1"; then
+                            echo "Model training job failed!"
+                            kubectl logs job/$(kubectl get jobs -o jsonpath='{.items[0].metadata.name}')
+                            exit 1
+                        fi
+                        
+                        echo "Model training completed successfully!"
                     '''
                 }
             }
@@ -61,6 +73,18 @@ pipeline {
                         echo "Using Minikube context:"
                         kubectl delete job kaniko-build-job --ignore-not-found
                         kubectl apply -f kaniko-build-job.yaml
+                        
+                        echo "Waiting for kaniko build job to complete..."
+                        kubectl wait --for=condition=complete job/kaniko-build-job --timeout=1800s
+                        
+                        # Check if job failed
+                        if kubectl get job kaniko-build-job -o jsonpath='{.status.failed}' | grep -q "1"; then
+                            echo "Kaniko build job failed!"
+                            kubectl logs job/kaniko-build-job
+                            exit 1
+                        fi
+                        
+                        echo "Model image push completed successfully!"
                     '''
                 }
             }
@@ -73,6 +97,18 @@ pipeline {
                         echo "Using Minikube context:"
                         kubectl delete job copy-model-job --ignore-not-found
                         kubectl apply -f job_extract_model.yaml
+                        
+                        echo "Waiting for model loading job to complete..."
+                        kubectl wait --for=condition=complete job/copy-model-job --timeout=900s
+                        
+                        # Check if job failed
+                        if kubectl get job copy-model-job -o jsonpath='{.status.failed}' | grep -q "1"; then
+                            echo "Model loading job failed!"
+                            kubectl logs job/copy-model-job
+                            exit 1
+                        fi
+                        
+                        echo "Model loading completed successfully!"
                     '''
                 }
             }
@@ -85,6 +121,11 @@ pipeline {
                         echo "Using Minikube context:"
                         kubectl config get-contexts
                         kubectl apply -f model-inference-manifests/
+                        
+                        echo "Waiting for deployment to be ready..."
+                        kubectl wait --for=condition=available --timeout=600s deployment --all
+                        
+                        echo "Deployment completed successfully!"
                     '''
                 }
             }
