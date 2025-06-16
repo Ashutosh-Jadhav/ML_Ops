@@ -54,7 +54,7 @@ graph TB
         F
     end
     
-    subgraph "training-env namespace"
+    subgraph "serving-model-env namespace"
         G
         H
         I
@@ -179,7 +179,7 @@ minikube addons enable ingress
 
 # Create namespaces
 kubectl create namespace training-model-env
-kubectl create namespace training-env
+kubectl create namespace serving-model-env
 ```
 
 ### 3. Configure Jenkins
@@ -348,19 +348,19 @@ targetCPUUtilizationPercentage: 5
 ### Monitor Scaling
 ```bash
 # Watch HPA status
-kubectl get hpa qna-hpa -n training-env -w
+kubectl get hpa qna-hpa -n serving-model-env -w
 
 # Check pod scaling
-kubectl get pods -n training-env -w
+kubectl get pods -n serving-model-env -w
 
 # View resource usage
-kubectl top pods -n training-env
+kubectl top pods -n serving-model-env
 ```
 
 ### Logs & Debugging
 ```bash
 # Service logs
-kubectl logs -f deployment/model-inference -n training-env
+kubectl logs -f deployment/model-inference -n serving-model-env
 
 # Training job logs
 kubectl logs job/train-model-job -n training-model-env
@@ -427,21 +427,21 @@ kubectl get secret regcred -n training-model-env -o yaml
 #### 3. Service Not Accessible
 ```bash
 # Check service status
-kubectl get svc model-service -n training-env
-kubectl get ingress qna-ingress -n training-env
+kubectl get svc model-service -n serving-model-env
+kubectl get ingress qna-ingress -n serving-model-env
 
 # Verify pod status
-kubectl get pods -n training-env
-kubectl describe pod <pod-name> -n training-env
+kubectl get pods -n serving-model-env
+kubectl describe pod <pod-name> -n serving-model-env
 ```
 
 #### 4. Model Loading Issues
 ```bash
 # Check model extraction job
-kubectl logs job/copy-model-job -n training-env
+kubectl logs job/copy-model-job -n serving-model-env
 
 # Verify PV/PVC status
-kubectl get pv,pvc -n training-env
+kubectl get pv,pvc -n serving-model-env
 ```
 
 ### Performance Tuning

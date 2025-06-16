@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: model-pvc-writer
-  namespace: training-env
+  namespace: serving-model-env
 spec:
   accessModes:
     - ReadWriteMany

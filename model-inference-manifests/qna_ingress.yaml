@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: qna-ingress
-  namespace: training-env
+  namespace: serving-model-env
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
