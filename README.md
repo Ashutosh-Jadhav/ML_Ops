@@ -39,7 +39,7 @@ This project implements a complete MLOps workflow for an Extractive Question Ans
 
 ```mermaid
 graph TB
-    A[GitHub Repository] -->|Push to v2 branch| B[Jenkins Pipeline]
+    A[GitHub Repository] -->|Push to main branch| B[Jenkins Pipeline]
     B --> C[Code Checkout & Testing]
     C --> D[Model Training Job]
     D --> E[Docker Image Build]
@@ -99,7 +99,7 @@ graph LR
 ## ✨ Features
 
 ### 🔄 **Automated CI/CD Pipeline**
-- **GitHub Integration**: Webhook triggers on push to `v2` branch
+- **GitHub Integration**: Webhook triggers on push to `main` branch
 - **Automated Testing**: pytest execution before deployment
 - **Email Notifications**: Success/failure alerts
 - **Clean Workspace**: Automatic cleanup after pipeline execution
@@ -137,9 +137,9 @@ graph LR
 ## 🛠️ Prerequisites
 
 ### Software Requirements
-- **Docker** (v20.0+)
+- **Docker** (main0.0+)
 - **Kubernetes/Minikube** (v1.20+)
-- **Jenkins** (v2.300+)
+- **Jenkins** (main.300+)
 - **Python** (3.10)
 - **kubectl** CLI tool
 
@@ -166,7 +166,7 @@ ashutoshj/trained-model-image2 # Model with weights
 ```bash
 git clone https://github.com/Ashutosh-Jadhav/ML_Ops.git
 cd ML_Ops
-git checkout v2
+git checkout main
 ```
 
 ### 2. Setup Minikube
@@ -214,17 +214,17 @@ kubectl create secret docker-registry regcred \
 
 ### 6. Trigger Pipeline
 ```bash
-# Push code to v2 branch to trigger the pipeline
+# Push code to main branch to trigger the pipeline
 git add .
 git commit -m "Trigger MLOps pipeline"
-git push origin v2
+git push origin main
 ```
 
 ## 📊 Pipeline Stages
 
 ### Stage 1: Code Checkout
 ```bash
-✅ Clone repository (v2 branch)
+✅ Clone repository (main branch)
 ✅ Validate code structure
 ✅ Set environment variables
 ```
