@@ -25,28 +25,28 @@ pipeline {
             }
         }
 
-        stage('Model Training') {
-            steps {
-                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
-                    sh '''
-                        echo "Using Minikube context:"
-                        kubectl apply -f train_model_manifests/
+        // stage('Model Training') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG')]) {
+        //             sh '''
+        //                 echo "Using Minikube context:"
+        //                 kubectl apply -f train_model_manifests/
                         
-                        echo "Waiting for model training job to complete..."
-                        kubectl wait --for=condition=complete job/train-model-job -n training-model-env --timeout=1800s
+        //                 echo "Waiting for model training job to complete..."
+        //                 kubectl wait --for=condition=complete job/train-model-job -n training-model-env --timeout=1800s
                         
-                        # Check if any job failed
-                        if kubectl get jobs -o jsonpath='{.items[*].status.failed}' | grep -q "1"; then
-                            echo "Model training job failed!"
-                            kubectl logs job/$(kubectl get jobs -o jsonpath='{.items[0].metadata.name}')
-                            exit 1
-                        fi
+        //                 # Check if any job failed
+        //                 if kubectl get jobs -o jsonpath='{.items[*].status.failed}' | grep -q "1"; then
+        //                     echo "Model training job failed!"
+        //                     kubectl logs job/$(kubectl get jobs -o jsonpath='{.items[0].metadata.name}')
+        //                     exit 1
+        //                 fi
                         
-                        echo "Model training completed successfully!"
-                    '''
-                }
-            }
-        }
+        //                 echo "Model training completed successfully!"
+        //             '''
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
@@ -66,30 +66,30 @@ pipeline {
             }
         }
 
-        stage('Push Model Image') {
-            steps {
-                withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG'),file(credentialsId: 'K8S_SECRET_FILE', variable: 'SECRET_YAML')]) {
-                    sh '''
-                        echo "Using Minikube context:"
-                        kubectl delete job kaniko-build-job --ignore-not-found
-                        kubectl apply -f $SECRET_YAML
-                        kubectl apply -f kaniko-build-job.yaml
+        // stage('Push Model Image') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'MINIKUBE_KUBECONFIG', variable: 'KUBECONFIG'),file(credentialsId: 'K8S_SECRET_FILE', variable: 'SECRET_YAML')]) {
+        //             sh '''
+        //                 echo "Using Minikube context:"
+        //                 kubectl delete job kaniko-build-job --ignore-not-found
+        //                 kubectl apply -f $SECRET_YAML
+        //                 kubectl apply -f kaniko-build-job.yaml
                         
-                        echo "Waiting for kaniko build job to complete..."
-                        kubectl wait --for=condition=complete job/kaniko-build-job -n training-model-env --timeout=1800s
+        //                 echo "Waiting for kaniko build job to complete..."
+        //                 kubectl wait --for=condition=complete job/kaniko-build-job -n training-model-env --timeout=1800s
                         
-                        # Check if job failed
-                        if kubectl get job kaniko-build-job -o jsonpath='{.status.failed}' | grep -q "1"; then
-                            echo "Kaniko build job failed!"
-                            kubectl logs job/kaniko-build-job
-                            exit 1
-                        fi
+        //                 # Check if job failed
+        //                 if kubectl get job kaniko-build-job -o jsonpath='{.status.failed}' | grep -q "1"; then
+        //                     echo "Kaniko build job failed!"
+        //                     kubectl logs job/kaniko-build-job
+        //                     exit 1
+        //                 fi
                         
-                        echo "Model image push completed successfully!"
-                    '''
-                }
-            }
-        }
+        //                 echo "Model image push completed successfully!"
+        //             '''
+        //         }
+        //     }
+        // }
         
         stage('Load Model') {
             steps {
